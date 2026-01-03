@@ -1,38 +1,42 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:url",
- "creation": "2026-01-02 23:35:57.794822",
+ "autoname": "field:skill",
+ "creation": "2025-12-28 15:01:07.053817",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "platform",
-  "url",
-  "icon"
+  "skill",
+  "level",
+  "project_link"
  ],
  "fields": [
   {
-   "fieldname": "platform",
-   "fieldtype": "Data",
+   "fieldname": "skill",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Platform",
-   "reqd": 1
-  },
-  {
-   "fieldname": "url",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "URL",
+   "label": "Skill",
+   "options": "Skill",
    "reqd": 1,
    "unique": 1
   },
   {
-   "fieldname": "icon",
+   "fieldname": "level",
    "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Icon Name",
-   "options": "fa-facebook\nfa-twitter\nfa-linkedin\nfa-instagram\nfa-github\nfa-youtube\nfa-pinterest\nfa-slack\nfa-whatsapp\nfa-telegram",
+   "label": "Level",
+   "options": "\nBeginner\nIntermediary\nProfessional",
+   "reqd": 1
+  },
+  {
+   "fieldname": "project_link",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Project Link",
+   "options": "URL",
    "reqd": 1
   }
  ],
@@ -40,10 +44,10 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-01-03 14:52:58.721863",
+ "modified": "2026-01-03 14:54:09.862016",
  "modified_by": "Administrator",
  "module": "Volunteer",
- "name": "Volunteer Social Link",
+ "name": "Volunteer Skill",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [],
