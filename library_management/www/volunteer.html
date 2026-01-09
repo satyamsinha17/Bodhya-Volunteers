@@ -1,0 +1,138 @@
+{% set volunteers = frappe.get_all("Bodhya Volunteer", 
+    fields=["full_name", "picture", "im_student", "college_name", "company_name", "role", "email"]) 
+%}
+
+<div class="bodhya-wrapper">
+    <h2 class="section-title">Meet Our Volunteers</h2>
+
+    {% if volunteers %}
+        <div class="volunteer-grid">
+            
+            {% for v in volunteers %}
+            <div class="v-card">
+                <div class="v-img-container">
+                    {% if v.picture %}
+                        <img src="{{ v.picture }}" alt="{{ v.full_name }}">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ v.full_name }}&background=random&size=128" alt="Avatar">
+                    {% endif %}
+                </div>
+
+                <div class="v-info">
+                    <h3 class="v-name">{{ v.full_name }}</h3>
+                    
+                    <p class="v-role">
+                        {% if v.im_student %}
+                            🎓 Student at <b>{{ v.college_name }}</b>
+                        {% else %}
+                            💼 {{ v.role or 'Volunteer' }} at <b>{{ v.company_name or 'Bodhya' }}</b>
+                        {% endif %}
+                    </p>
+
+                    {% if v.email %}
+                        <div class="v-email">
+                            ✉️ {{ v.email }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    
+    {% else %}
+        <div class="no-data">
+            <p>😕 No volunteers found in the database yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .bodhya-wrapper {
+        padding: 40px 20px;
+        background-color: #f9f9f9;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    .section-title {
+        text-align: center;
+        color: #333;
+        margin-bottom: 40px;
+        font-weight: 700;
+        font-size: 2rem;
+    }
+
+    /* Grid Layout for Desktop & Mobile */
+    .volunteer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Card Design */
+    .v-card {
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .v-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    /* Image Styling */
+    .v-img-container {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 15px;
+    }
+
+    .v-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #E2725B; /* Terracotta Color border */
+    }
+
+    /* Text Styling */
+    .v-name {
+        margin: 0 0 8px;
+        font-size: 1.2rem;
+        color: #2c3e50;
+    }
+
+    .v-role {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+
+    .v-email {
+        font-size: 0.85rem;
+        color: #555;
+        background: #f0f0f0;
+        padding: 5px 12px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .no-data {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #777;
+        padding: 50px;
+    }
+</style>
