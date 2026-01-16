@@ -1,138 +1,689 @@
-{% set volunteers = frappe.get_all("Bodhya Volunteer", 
-    fields=["full_name", "picture", "im_student", "college_name", "company_name", "role", "email"]) 
-%}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bodhya - Our Volunteers</title>
+    <style>
+      :root {
+        --color-terracotta: #e2725b;
+        --color-terracotta-dark: #8b4513;
+        --color-cream: #fffdf7;
+        --color-bg: #f9f7f5;
+        --color-text: #2c3e50;
+        --color-accent: #1b5e75;
+        --color-border-light: #e8ddd4;
+      }
 
-<div class="bodhya-wrapper">
-    <h2 class="section-title">Meet Our Volunteers</h2>
-
-    {% if volunteers %}
-        <div class="volunteer-grid">
-            
-            {% for v in volunteers %}
-            <div class="v-card">
-                <div class="v-img-container">
-                    {% if v.picture %}
-                        <img src="{{ v.picture }}" alt="{{ v.full_name }}">
-                    {% else %}
-                        <img src="https://ui-avatars.com/api/?name={{ v.full_name }}&background=random&size=128" alt="Avatar">
-                    {% endif %}
-                </div>
-
-                <div class="v-info">
-                    <h3 class="v-name">{{ v.full_name }}</h3>
-                    
-                    <p class="v-role">
-                        {% if v.im_student %}
-                            🎓 Student at <b>{{ v.college_name }}</b>
-                        {% else %}
-                            💼 {{ v.role or 'Volunteer' }} at <b>{{ v.company_name or 'Bodhya' }}</b>
-                        {% endif %}
-                    </p>
-
-                    {% if v.email %}
-                        <div class="v-email">
-                            ✉️ {{ v.email }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-
-        </div>
-    
-    {% else %}
-        <div class="no-data">
-            <p>😕 No volunteers found in the database yet.</p>
-        </div>
-    {% endif %}
-</div>
-
-<style>
-    .bodhya-wrapper {
-        padding: 40px 20px;
-        background-color: #f9f9f9;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    
-    .section-title {
-        text-align: center;
-        color: #333;
-        margin-bottom: 40px;
-        font-weight: 700;
-        font-size: 2rem;
-    }
-
-    /* Grid Layout for Desktop & Mobile */
-    .volunteer-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 25px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    /* Card Design */
-    .v-card {
-        background: #ffffff;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        border: 1px solid #eee;
-        transition: transform 0.3s ease;
+      /* ===== NAVBAR ===== */
+      nav {
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
         align-items: center;
-        padding: 25px;
+        padding: 16px 40px;
+        background-color: var(--color-cream);
+        border-bottom: 1px solid var(--color-border-light);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-brand {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--color-terracotta);
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 32px;
+        align-items: center;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--color-text);
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--color-terracotta);
+      }
+
+      .nav-cta {
+        background-color: var(--color-terracotta);
+        color: var(--color-cream);
+        padding: 8px 20px;
+        border-radius: 6px;
+        border: none;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .nav-cta:hover {
+        background-color: var(--color-terracotta-dark);
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          padding: 12px 20px;
+        }
+
+        .nav-links {
+          gap: 16px;
+        }
+
+        .nav-links a {
+          font-size: 12px;
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          sans-serif;
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        line-height: 1.6;
+      }
+
+      /* ===== HERO SECTION ===== */
+      .hero {
+        background: linear-gradient(
+          135deg,
+          var(--color-cream) 0%,
+          #fbf8f2 100%
+        );
+        padding: 80px 20px;
         text-align: center;
-    }
+        position: relative;
+        overflow: hidden;
+      }
 
-    .v-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
+      .hero::before {
+        content: "🍃";
+        position: absolute;
+        top: 30px;
+        left: 40px;
+        font-size: 28px;
+        opacity: 0.25;
+      }
 
-    /* Image Styling */
-    .v-img-container {
-        width: 100px;
-        height: 100px;
-        margin-bottom: 15px;
-    }
+      .hero::after {
+        content: "🐠";
+        position: absolute;
+        bottom: 40px;
+        right: 40px;
+        font-size: 28px;
+        opacity: 0.25;
+      }
 
-    .v-img-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 3px solid #E2725B; /* Terracotta Color border */
-    }
+      .hero-mithila-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: repeating-linear-gradient(
+          90deg,
+          var(--color-terracotta),
+          var(--color-terracotta) 8px,
+          transparent 8px,
+          transparent 12px
+        );
+      }
 
-    /* Text Styling */
-    .v-name {
-        margin: 0 0 8px;
-        font-size: 1.2rem;
-        color: #2c3e50;
-    }
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+      }
 
-    .v-role {
-        font-size: 0.9rem;
+      .hero-arch {
+        width: 60px;
+        height: 30px;
+        margin: 0 auto 24px;
+        border: 2px solid var(--color-terracotta);
+        border-bottom: none;
+        border-radius: 60px 60px 0 0;
+        opacity: 0.6;
+      }
+
+      .hero h1 {
+        font-size: 44px;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 12px;
+      }
+
+      .hero p {
+        font-size: 16px;
+        color: var(--color-text);
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+
+      .hero-description {
+        font-size: 15px;
         color: #666;
-        margin-bottom: 15px;
-        line-height: 1.4;
-    }
+        max-width: 600px;
+        margin: 0 auto 32px;
+        line-height: 1.7;
+        font-weight: 400;
+      }
 
-    .v-email {
-        font-size: 0.85rem;
-        color: #555;
-        background: #f0f0f0;
-        padding: 5px 12px;
-        border-radius: 20px;
-        display: inline-block;
-    }
+      /* ===== SEARCH SECTION ===== */
+      .search-section {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        align-items: center;
+        margin-top: 40px;
+        flex-wrap: wrap;
+      }
 
-    .no-data {
+      .search-box {
+        flex: 1;
+        min-width: 200px;
+        max-width: 400px;
+        padding: 12px 16px;
+        border: 1px solid var(--color-border-light);
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: var(--color-cream);
+      }
+
+      .search-box::placeholder {
+        color: #999;
+      }
+
+      .volunteer-count {
+        font-size: 14px;
+        color: #888;
+        font-weight: 500;
+      }
+
+      .volunteer-count strong {
+        color: var(--color-terracotta);
+        font-weight: 700;
+      }
+
+      /* ===== VOLUNTEERS SECTION ===== */
+      .volunteers-section {
+        padding: 60px 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .volunteers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 32px;
+      }
+
+      /* ===== VOLUNTEER CARD ===== */
+      .volunteer-card {
         text-align: center;
-        font-size: 1.2rem;
-        color: #777;
-        padding: 50px;
-    }
-</style>
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .volunteer-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .volunteer-image {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 12px;
+        object-fit: cover;
+        margin-bottom: 14px;
+        border: 2px solid var(--color-border-light);
+      }
+
+      .volunteer-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 4px;
+      }
+
+      .volunteer-college {
+        font-size: 12px;
+        color: #888;
+      }
+
+      /* ===== CTA SECTION ===== */
+      .cta-section {
+        background: linear-gradient(
+          135deg,
+          var(--color-cream) 0%,
+          #fbf8f2 100%
+        );
+        padding: 80px 20px;
+        text-align: center;
+        margin-top: 60px;
+        position: relative;
+      }
+
+      .cta-section::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: repeating-linear-gradient(
+          90deg,
+          var(--color-terracotta),
+          var(--color-terracotta) 8px,
+          transparent 8px,
+          transparent 12px
+        );
+      }
+
+      .cta-content {
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .cta-section h2 {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 16px;
+      }
+
+      .cta-section p {
+        font-size: 15px;
+        color: #666;
+        margin-bottom: 32px;
+        line-height: 1.6;
+      }
+
+      .cta-btn {
+        background-color: var(--color-terracotta);
+        color: var(--color-cream);
+        padding: 14px 40px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        box-shadow: 0 4px 12px rgba(226, 114, 91, 0.2);
+      }
+
+      .cta-btn:hover {
+        background-color: var(--color-terracotta-dark);
+      }
+
+      /* ===== MODAL ===== */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: var(--color-cream);
+        border-radius: 16px;
+        width: 90%;
+        max-width: 500px;
+        margin: auto;
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--color-text);
+        z-index: 10;
+      }
+
+      #modal-cover {
+        height: 150px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        border-radius: 16px 16px 0 0;
+      }
+
+      .modal-body {
+        padding: 40px 28px 28px;
+        text-align: center;
+      }
+
+      .modal-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: -70px auto 20px;
+        border: 4px solid var(--color-cream);
+        object-fit: cover;
+        background: var(--color-bg);
+      }
+
+      .modal-name {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 6px;
+      }
+
+      .modal-role {
+        display: inline-block;
+        background-color: rgba(226, 114, 91, 0.12);
+        color: var(--color-terracotta);
+        padding: 6px 14px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 12px;
+      }
+
+      .modal-college {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 16px;
+      }
+
+      .modal-bio {
+        font-size: 14px;
+        color: var(--color-text);
+        margin: 16px 0;
+        line-height: 1.6;
+      }
+
+      .modal-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin: 16px 0;
+      }
+
+      .skill-tag {
+        background-color: #f0f0f0;
+        color: #666;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .modal-socials {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--color-border-light);
+      }
+
+      .social-icon-modal {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--color-bg);
+        border: 1px solid var(--color-border-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: var(--color-text);
+        font-size: 18px;
+        transition: all 0.2s ease;
+      }
+
+      .social-icon-modal:hover {
+        background-color: var(--color-terracotta);
+        color: var(--color-cream);
+        border-color: var(--color-terracotta);
+      }
+
+      /* ===== FOOTER ===== */
+      .footer {
+        background-color: var(--color-text);
+        color: var(--color-cream);
+        text-align: center;
+        padding: 30px 20px;
+        font-size: 13px;
+        margin-top: 40px;
+      }
+
+      .footer a {
+        color: var(--color-terracotta);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 28px;
+        }
+
+        .hero-stats {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .volunteers-grid {
+          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+          gap: 20px;
+        }
+
+        .modal-content {
+          width: 95%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .volunteers-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+        }
+
+        .volunteer-name {
+          font-size: 14px;
+        }
+
+        .volunteer-college {
+          font-size: 12px;
+        }
+      }
+    </style> 
+            onclick="document.querySelector('.cta-section').scrollIntoView({behavior:'smooth'})"
+          >
+            Volunteer
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-mithila-top"></div>
+      <div class="hero-content">
+        <div class="hero-arch"></div>
+        <h1>Our Volunteers</h1>
+        <p>Students, mentors and friends building Bihar's FOSS future</p>
+        <p class="hero-description">
+          Our volunteers are the backbone of Bodhya. They dedicate their time,
+          energy, and expertise to build tech education opportunities for
+          students in tier-3 colleges across Bihar. From FOSS club leads to
+          mentors, from student guides to donors—every volunteer plays a crucial
+          role in democratizing tech education and building an inclusive FOSS
+          community.
+        </p>
+        <div class="search-section">
+          <input
+            type="text"
+            id="searchBox"
+            class="search-box"
+            placeholder="Search volunteers by name or college..."
+          />
+          <span class="volunteer-count"
+            >Total: <strong id="totalCount">15</strong> volunteers</span
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- VOLUNTEERS GRID -->
+    <section class="volunteers-section" id="volunteers">
+      <div class="volunteers-grid" id="volunteersGrid">
+        <!-- Cards generated by JS -->
+      </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+      <div class="cta-content">
+        <h2>Join Our Volunteer Community</h2>
+        <p>
+          Help us build Bihar's FOSS future. Whether you're a mentor, student
+          lead, or passionate about tech education, there's a place for you in
+          Bodhya.
+        </p>
+        <button
+          class="cta-btn"
+          onclick="window.open('http://volunteer.test:8000/volunteer-registration/new')"
+        >
+          Become a Volunteer
+        </button>
+      </div>
+    </section>
+
+    <!-- VOLUNTEER PROFILE MODAL -->
+    <div class="modal" id="volunteerModal">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <img id="modal-cover" src="" alt="">
+        <div class="modal-body">
+          <img id="modalAvatar" class="modal-avatar" src="" alt="" />
+          <h2 id="modalName" class="modal-name"></h2>
+          <span id="modalRole" class="modal-role"></span>
+          <div id="modalCollege" class="modal-college"></div>
+          <p id="modalBio" class="modal-bio"></p>
+          <div id="modalSkills" class="modal-skills"></div>
+          <div class="modal-socials">
+            <a id="modalGithub" class="social-icon-modal" target="_blank">🔗</a>
+            <a id="modalLinkedin" class="social-icon-modal" target="_blank"
+              >💼</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>
+        Bodhya © 2025 | Building tech education and opportunities for Bihar
+        students
+      </p>
+      <p style="margin-top: 8px; font-size: 11px">
+        <a href="#">Contact</a> • <a href="#">Learn More</a> •
+        <a href="#">Contribute</a>
+      </p>
+    </footer>
+
+    <script>
+      const volunteers = {{ volunteers | tojson | safe }};
+
+function renderVolunteers() {
+	const grid = document.getElementById("volunteersGrid");
+	const filteredVolunteers = volunteers.filter((vol) => {
+		const searchText = document.getElementById("searchBox").value.toLowerCase();
+		return (
+			vol.full_name.toLowerCase().includes(searchText) ||
+			vol.college_name.toLowerCase().includes(searchText)
+		);
+	});
+
+	document.getElementById("totalCount").textContent = filteredVolunteers.length;
+
+	grid.innerHTML = filteredVolunteers
+		.map(
+			(vol, idx) => `
+                <div class="volunteer-card" onclick="openModal(${volunteers.indexOf(vol)})">
+                    <img src="${vol.picture}" alt="${
+				vol.full_name
+			}" class="volunteer-image" onerror="this.src='https://via.placeholder.com/180?text=${encodeURIComponent(
+				vol.full_name.split(" ")[0]
+			)}'">
+                    <h3 class="volunteer-name">${vol.full_name}</h3>
+                    <p class="volunteer-college">${vol.college_name ? vol.college_name : vol.company_name}</p>
+                </div>
+            `
+		)
+		.join("");
+}
+
+document.getElementById("searchBox").addEventListener("input", renderVolunteers);
+
+function openModal(index) {
+	const vol = volunteers[index];
+	document.getElementById("modalAvatar").src = vol.picture;
+  document.getElementById("modal-cover").src = vol.banner_image;
+	document.getElementById("modalName").textContent = vol.full_name;
+	document.getElementById("modalRole").textContent = vol.volunteer_type;
+	document.getElementById("modalCollege").textContent = vol.college_name ? `${vol.college_name} • ${vol.year}` : `${vol.company_name} • ${vol.role}`;
+	document.getElementById("modalBio").textContent = vol.bio;
+	document.getElementById("modalSkills").innerHTML = vol.skills.map((s) => `<span class="skill-tag">${s.skill}</span>`).join("");
+	document.getElementById("modalGithub").href = vol.github;
+	document.getElementById("modalLinkedin").href = vol.linkedin;
+	document.getElementById("volunteerModal").classList.add("active");
+}
+
+function closeModal() {
+	document.getElementById("volunteerModal").classList.remove("active");
+}
+
+document.getElementById("volunteerModal").addEventListener("click", (e) => {
+	if (e.target.id === "volunteerModal") closeModal();
+});
+
+renderVolunteers();
+
+    </script>
+  </body>
+</html>
